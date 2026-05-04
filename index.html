@@ -4,17 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amyra’s Magic Kingdom</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
     <style>
-        /* --- Design System & Variables --- */
+        /* --- Zenly Design System --- */
         :root {
-            --pink: #ffd6e8;
-            --yellow: #fff4b3;
+            --pink: #ff4d94;
+            --orange: #ff944d;
+            --yellow: #ffdb4d;
             --white: #ffffff;
-            --gold: #f39c12;
-            --text: #5d4037;
-            --shadow: rgba(0, 0, 0, 0.1);
-            --gradient: linear-gradient(135deg, #ffd6e8 0%, #fff4b3 100%);
-            --font-main: 'Comic Sans MS', 'Chalkboard SE', 'cursive', sans-serif;
+            --text: #2d3436;
+            --glass: rgba(255, 255, 255, 0.25);
+            --shadow: 0 20px 50px rgba(255, 77, 148, 0.3);
+            --font-main: 'Nunito', sans-serif;
+            --font-display: 'Fredoka', sans-serif;
         }
 
         * {
@@ -26,14 +28,13 @@
 
         body {
             font-family: var(--font-main);
-            background: var(--pink);
-            background-attachment: fixed;
+            background: #fdf2f8;
             color: var(--text);
             overflow-x: hidden;
             scroll-behavior: smooth;
         }
 
-        /* --- Background Magic --- */
+        /* --- Mesh Gradient Background --- */
         .magic-bg {
             position: fixed;
             top: 0;
@@ -41,17 +42,37 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            overflow: hidden;
-            background: var(--gradient);
+            background-color: #ff4d94;
+            background-image: 
+                radial-gradient(at 0% 0%, #ff944d 0px, transparent 50%),
+                radial-gradient(at 50% 0%, #ffdb4d 0px, transparent 50%),
+                radial-gradient(at 100% 0%, #ff4d94 0px, transparent 50%),
+                radial-gradient(at 0% 50%, #ffdb4d 0px, transparent 50%),
+                radial-gradient(at 100% 50%, #ff944d 0px, transparent 50%),
+                radial-gradient(at 0% 100%, #ff4d94 0px, transparent 50%),
+                radial-gradient(at 50% 100%, #ff944d 0px, transparent 50%),
+                radial-gradient(at 100% 100%, #ffdb4d 0px, transparent 50%);
+            background-size: 200% 200%;
+            animation: meshShift 20s ease infinite;
             transition: 2s;
         }
 
+        @keyframes meshShift {
+            0% { background-position: 0% 0%; }
+            50% { background-position: 100% 100%; }
+            100% { background-position: 0% 0%; }
+        }
+
         body.night-mode {
-            --pink: #2c3e50;
-            --yellow: #34495e;
-            --white: #1a1a1a;
-            --text: #ecf0f1;
-            --gradient: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
+            background-color: #1a0633;
+            --glass: rgba(0, 0, 0, 0.4);
+            --text: #fff;
+        }
+
+        body.night-mode .magic-bg {
+            background-image: 
+                radial-gradient(at 0% 0%, #4a00e0 0px, transparent 50%),
+                radial-gradient(at 100% 100%, #8e2de2 0px, transparent 50%);
         }
         
         body.night-mode .frame, body.night-mode .workbench-card, body.night-mode .story-book, body.night-mode section {
@@ -77,77 +98,84 @@
 
         /* --- Navigation --- */
         nav {
-            position: sticky;
-            top: 10px;
-            z-index: 100;
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            padding: 15px 30px;
+            border-radius: 50px;
             display: flex;
-            justify-content: center;
-            gap: 10px;
-            padding: 10px;
-            flex-wrap: wrap;
+            gap: 20px;
+            z-index: 2000;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
         }
 
         .nav-btn {
-            background: var(--white);
-            border: 3px solid var(--yellow);
-            border-radius: 50px;
-            padding: 10px 20px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            color: var(--text);
+            background: transparent;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 30px;
+            font-family: var(--font-display);
+            font-weight: 800;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 4px 10px var(--shadow);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            transition: 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            color: white;
+            font-size: 1.1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
-        .nav-btn:hover {
-            transform: scale(1.1) translateY(-3px);
-            background: var(--yellow);
-            border-color: var(--white);
-        }
-
-        .nav-btn.active {
-            background: var(--yellow);
-            box-shadow: 0 0 15px rgba(255, 244, 179, 0.8);
+        .nav-btn:hover, .nav-btn.active {
+            background: white;
+            color: var(--pink);
+            transform: translateY(-10px) scale(1.1);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
         /* --- Layout --- */
         main {
-            max-width: 900px;
-            margin: 20px auto;
+            max-width: 1000px;
+            margin: 40px auto;
             padding: 20px;
         }
 
         section {
             display: none;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(5px);
-            border-radius: 40px;
-            padding: 40px;
-            box-shadow: 0 15px 35px var(--shadow);
-            border: 8px solid var(--white);
-            animation: fadeIn 0.6s ease-out;
-            min-height: 60vh;
+            background: var(--glass);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            border-radius: 60px;
+            padding: 60px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: popUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+            min-height: 80vh;
+            margin-bottom: 120px;
+            transform: perspective(1000px) rotateX(2deg);
         }
 
         section.active {
             display: block;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes popUp {
+            from { opacity: 0; transform: scale(0.9) translateY(50px) rotateX(10deg); }
+            to { opacity: 1; transform: scale(1) translateY(0) rotateX(2deg); }
         }
 
         h1 {
-            font-size: 2.8rem;
+            font-family: var(--font-display);
+            font-size: 4.5rem;
+            font-weight: 800;
             text-align: center;
-            margin-bottom: 20px;
-            color: #ff69b4;
-            text-shadow: 2px 2px 0 var(--white);
+            margin-bottom: 40px;
+            color: white;
+            text-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            letter-spacing: -2px;
         }
 
         /* --- Homepage --- */
@@ -161,23 +189,25 @@
         }
 
         .magic-button {
-            background: linear-gradient(to right, #ff99cc, #ffcc99);
-            color: white;
+            background: #fff;
+            color: var(--pink);
             border: none;
-            padding: 20px 40px;
-            font-size: 1.5rem;
-            border-radius: 100px;
+            padding: 25px 60px;
+            font-size: 2rem;
+            font-family: var(--font-display);
+            font-weight: 800;
+            border-radius: 40px;
             cursor: pointer;
-            margin-top: 30px;
-            box-shadow: 0 10px 20px rgba(255, 105, 180, 0.3);
-            transition: 0.3s;
-            position: relative;
-            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            transition: 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform: perspective(1000px) rotateX(10deg);
         }
 
         .magic-button:hover {
-            transform: scale(1.05);
-            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.5);
+            transform: perspective(1000px) rotateX(0deg) scale(1.1) translateY(-10px);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.25);
+            background: var(--pink);
+            color: white;
         }
 
         .magic-message {
@@ -400,6 +430,127 @@
             font-size: 0.8rem;
         }
 
+        /* --- Fullscreen Modal --- */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .modal-content {
+            max-width: 90%;
+            max-height: 80%;
+            border: 15px solid var(--white);
+            border-radius: 20px;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-label {
+            color: white;
+            font-size: 2rem;
+            margin-top: 20px;
+            text-shadow: 0 0 10px var(--pink);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-size: 4rem;
+            color: white;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+        /* --- Story Bookshelf --- */
+        .bookshelf {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .story-book-cover {
+            aspect-ratio: 3/4;
+            background: var(--white);
+            border-radius: 15px;
+            border-left: 10px solid rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 5px 5px 15px var(--shadow);
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: var(--text);
+            position: relative;
+        }
+
+        .story-book-cover:hover {
+            transform: translateY(-10px) rotate(2deg);
+            box-shadow: 10px 10px 25px var(--shadow);
+        }
+
+        .book-emoji {
+            font-size: 3rem;
+            margin-bottom: 10px;
+        }
+
+        /* --- Pulsing Speaker --- */
+        .speaker-btn {
+            background: #ff99cc;
+            border: 5px solid white;
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            font-size: 2.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 5px 15px var(--shadow);
+            transition: 0.3s;
+        }
+
+        .speaker-btn.talking {
+            animation: pulse-pink 1s infinite;
+        }
+
+        @keyframes pulse-pink {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 153, 204, 0.7); }
+            70% { transform: scale(1.1); box-shadow: 0 0 0 20px rgba(255, 153, 204, 0); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 153, 204, 0); }
+        }
+
+        .sparkle {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkle-fade 0.8s ease-out forwards;
+            z-index: 9999;
+        }
+
+        @keyframes sparkle-fade {
+            0% { transform: scale(0) rotate(0deg); opacity: 1; }
+            100% { transform: scale(1.5) rotate(180deg); opacity: 0; }
+        }
+
         /* --- Responsive --- */
         @media (max-width: 600px) {
             h1 { font-size: 2rem; }
@@ -413,29 +564,28 @@
     <div class="magic-bg" id="magic-bg"></div>
 
     <nav>
-        <button class="nav-btn active" onclick="showSection('home')">🏠 Home</button>
-        <button class="nav-btn" onclick="showSection('art')">🎨 Art Room</button>
-        <button class="nav-btn" onclick="showSection('story')">🏰 Story</button>
-        <button class="nav-btn" onclick="showSection('game')">🎮 Game</button>
-        <button class="nav-btn" onclick="showSection('learning')">🌸 Garden</button>
-        <button class="nav-btn" style="border-style: dashed;" onclick="showSection('workbench')">✨ Workbench</button>
-        <button class="nav-btn" id="music-toggle" onclick="toggleMusic()">🎵 Play Magic Music</button>
+        <button class="nav-btn active" onclick="showSection('home')">Home</button>
+        <button class="nav-btn" onclick="showSection('art')">Gallery</button>
+        <button class="nav-btn" onclick="showSection('story')">Library</button>
+        <button class="nav-btn" onclick="showSection('game')">Game</button>
+        <button class="nav-btn" onclick="showSection('learning')">Garden</button>
+        <button class="nav-btn" style="border-style: dashed;" onclick="showSection('workbench')">Create</button>
+        <button class="nav-btn" id="music-toggle" onclick="toggleMusic()">Music</button>
     </nav>
 
     <main>
         <!-- Home Section -->
         <section id="home" class="active">
             <div class="hero">
-                <div class="hero-sparkles">✨🐱🐰✨</div>
-                <h1>Welcome to Amyra’s Magic Kingdom</h1>
-                <p style="font-size: 1.4rem;">Where dreams come true and everything is sweet!</p>
+                <h1>Amyra’s Magic Kingdom</h1>
+                <p style="font-size: 1.6rem; color: white; opacity: 0.9;">Where every drawing is a new adventure!</p>
                 
-                <button class="magic-button" onclick="magicMessage()">✨ Press for Magic! ✨</button>
-                <div id="magic-msg" class="magic-message"></div>
-                
-                <div style="margin-top: 40px; font-size: 5rem;">
-                    👑 🍦 🍰 🦄
+                <div style="margin: 40px 0;">
+                    <img src="magic_kingdom_assets_1777906759645.png" style="max-width: 80%; border-radius: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); animation: float3D 6s ease-in-out infinite;">
                 </div>
+
+                <button class="magic-button" onclick="magicMessage()">✨ Enter the Magic ✨</button>
+                <div id="magic-msg" class="magic-message"></div>
             </div>
         </section>
 
@@ -456,18 +606,21 @@
         <!-- Story Section -->
         <section id="story">
             <h1>Story Castle</h1>
-            <div id="story-list-container">
-                <div class="story-book" id="story-content">
-                    <!-- Default Story -->
-                    <div class="story-page active-page">
-                        <h2>Princess Amyra and the Magic Ice Cream</h2>
-                        <p>Once upon a time, in a land of pastel pink clouds, lived <b>Princess Amyra</b>. She had two best friends: a fluffy white cat named Pearl and a tiny rabbit named Buttons.</p>
-                        <p>One sunny morning, they found a glowing ice cream cart near the Royal Garden...</p>
-                    </div>
+            
+            <!-- Library View -->
+            <div id="library-view">
+                <p style="text-align: center;">Pick a story from your bookshelf!</p>
+                <div class="bookshelf" id="story-bookshelf">
+                    <!-- Books will be inserted here -->
                 </div>
             </div>
-            <div class="page-controls" id="story-nav-controls">
-                <!-- Navigation buttons will be added dynamically -->
+
+            <!-- Reading View -->
+            <div id="reading-view" style="display: none;">
+                <button class="nav-btn" style="margin-bottom: 20px;" onclick="closeStory()">⬅️ Back to Library</button>
+                <div class="story-book" id="story-content">
+                    <!-- Story content here -->
+                </div>
             </div>
         </section>
 
@@ -503,6 +656,18 @@
 
                 <textarea id="story-text" class="magic-textarea" placeholder="Start typing your story..."></textarea>
                 <button class="magic-button" style="width: 100%; font-size: 1.8rem;" onclick="saveStory()">SAVE STORY! ✍️</button>
+            </div>
+
+            <div class="workbench-card" style="background: #e1f5fe; border-color: #03a9f4;">
+                <h2>💾 Magic Backup & Restore</h2>
+                <p style="font-size: 0.9rem; margin-bottom: 15px;">Save all stories and drawings to your computer so they are safe forever!</p>
+                <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <button class="magic-button" style="background: #03a9f4; font-size: 1.2rem; flex: 1;" onclick="downloadBackup()">Backup All Magic 💾</button>
+                    <div style="flex: 1;">
+                        <input type="file" id="restore-file" style="display: none;" accept=".json" onchange="restoreBackup(this)">
+                        <button class="magic-button" style="background: #4caf50; font-size: 1.2rem; width: 100%;" onclick="document.getElementById('restore-file').click()">Restore Magic 📂</button>
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -543,6 +708,13 @@
             <p id="reward-text" style="font-size: 2rem;">You won a cake! 🍰</p>
             <button class="magic-button" onclick="closeReward()">Thank you! ✨</button>
         </div>
+    </div>
+
+    <!-- Fullscreen Art Modal -->
+    <div id="art-modal" class="modal" onclick="closeArt()">
+        <button class="close-modal">&times;</button>
+        <img id="modal-img" class="modal-content">
+        <div id="modal-label" class="modal-label"></div>
     </div>
 
     <script>
@@ -794,58 +966,99 @@
         }
 
         function loadStories() {
-            const container = document.getElementById('story-content');
-            const controls = document.getElementById('story-nav-controls');
+            const bookshelf = document.getElementById('story-bookshelf');
+            const colors = ['#ffd6e8', '#fff4b3', '#e1f5fe', '#f3e5f5', '#e8f5e9'];
             
-            // Start with default story
             let html = `
-                <div class="story-page" id="page-default">
-                    <div style="display:flex; justify-content:space-between; align-items:center;">
-                        <h2>Princess Amyra and the Magic Ice Cream</h2>
-                        <button class="magic-button" style="padding: 10px 20px; font-size: 1rem;" onclick="readText('Princess Amyra and the Magic Ice Cream. Once upon a time, in a land of pastel pink clouds, lived Princess Amyra. She had two best friends: a fluffy white cat named Pearl and a tiny rabbit named Buttons.')">🔊 Read Story</button>
-                    </div>
-                    <p>Once upon a time, in a land of pastel pink clouds, lived <b>Princess Amyra</b>. She had two best friends: a fluffy white cat named Pearl and a tiny rabbit named Buttons.</p>
-                    <p>They found a magic ice cream cart that made everyone float! 🍦✨</p>
+                <div class="story-book-cover" style="background: #ffd6e8" onclick="openStory('default')">
+                    <div class="book-emoji">🍦</div>
+                    <div>Magic Ice Cream</div>
                 </div>
             `;
 
             myStories.forEach((s, index) => {
+                const color = colors[index % colors.length];
                 html += `
-                    <div class="story-page" id="page-${index}" style="display:none">
-                        <div style="display:flex; justify-content:space-between; align-items:center;">
-                            <h2>${s.title}</h2>
-                            <div>
-                                <button class="magic-button" style="padding: 10px 20px; font-size: 1rem;" onclick="readText('${s.title}. ${s.text.replace(/'/g, "\\'")}')">🔊 Read Aloud</button>
-                                <button class="delete-btn" onclick="deleteStory(${index})">Delete 🗑️</button>
-                            </div>
-                        </div>
-                        <p>${s.text.replace(/\n/g, '<br>')}</p>
+                    <div class="story-book-cover" style="background: ${color}" onclick="openStory(${index})">
+                        <div class="book-emoji">📜</div>
+                        <div>${s.title}</div>
                     </div>
                 `;
             });
 
-            container.innerHTML = html;
+            bookshelf.innerHTML = html;
+        }
+
+        function openStory(id) {
+            const content = document.getElementById('story-content');
+            document.getElementById('library-view').style.display = 'none';
+            document.getElementById('reading-view').style.display = 'block';
+
+            let title, text, readTextStr;
+            if (id === 'default') {
+                title = "Princess Amyra and the Magic Ice Cream";
+                text = `<p>Once upon a time, in a land of pastel pink clouds, lived <b>Princess Amyra</b>. She had two best friends: a fluffy white cat named Pearl and a tiny rabbit named Buttons.</p><p>They found a magic ice cream cart that made everyone float! 🍦✨</p>`;
+                readTextStr = "Princess Amyra and the Magic Ice Cream. Once upon a time, in a land of pastel pink clouds, lived Princess Amyra. She had two best friends: a fluffy white cat named Pearl and a tiny rabbit named Buttons.";
+            } else {
+                const s = myStories[id];
+                title = s.title;
+                text = `<p>${s.text.replace(/\n/g, '<br>')}</p>`;
+                readTextStr = `${s.title}. ${s.text.replace(/'/g, "\\'")}`;
+            }
+
+            content.innerHTML = `
+                <div style="display:flex; flex-direction:column; align-items:center; margin-bottom: 30px;">
+                    <div style="display:flex; justify-content:space-between; width:100%; align-items:center; margin-bottom: 20px;">
+                        <h2 style="font-size: 2rem;">${title}</h2>
+                        ${id !== 'default' ? `<button class="delete-btn" onclick="deleteStory(${id})">Delete Story 🗑️</button>` : ''}
+                    </div>
+                    
+                    <div style="display:flex; gap: 20px; align-items:center; background: #fff; padding: 15px 30px; border-radius: 50px; box-shadow: 0 5px 15px var(--shadow);">
+                        <button id="speaker-btn" class="speaker-btn" onclick="readText('${readTextStr}')">🔊</button>
+                        <button class="nav-btn" onclick="stopReading()">🛑 Stop</button>
+                        <span style="font-weight:bold; color: #ff69b4;">Press to Listen!</span>
+                    </div>
+                </div>
+                ${text}
+            `;
             
-            // Build Controls
-            let ctrlHtml = `<button class="nav-btn" onclick="showPage('default')">📖 Main Story</button>`;
-            myStories.forEach((s, index) => {
-                ctrlHtml += `<button class="nav-btn" onclick="showPage(${index})">📜 ${s.title.substring(0,10)}...</button>`;
-            });
-            controls.innerHTML = ctrlHtml;
+            playMagicSound(800, 0.1);
+        }
+
+        function closeStory() {
+            document.getElementById('library-view').style.display = 'block';
+            document.getElementById('reading-view').style.display = 'none';
+            playMagicSound(600, 0.1);
         }
 
         function readText(text) {
-            window.speechSynthesis.cancel();
+            stopReading();
+            const btn = document.getElementById('speaker-btn');
+            if(btn) btn.classList.add('talking');
+
             const msg = new SpeechSynthesisUtterance(text);
             
-            // Find a premium Mac voice
-            const voices = window.speechSynthesis.getVoices();
+            // Find a premium Mac voice (Samantha)
+            let voices = window.speechSynthesis.getVoices();
+            if (voices.length === 0) {
+                window.speechSynthesis.onvoiceschanged = () => readText(text);
+                return;
+            }
+
             const premiumVoice = voices.find(v => v.name.includes('Samantha') || v.name.includes('Premium'));
             if (premiumVoice) msg.voice = premiumVoice;
 
             msg.rate = 0.9;
             msg.pitch = 1.1; 
+            
+            msg.onend = () => { if(btn) btn.classList.remove('talking'); };
             window.speechSynthesis.speak(msg);
+        }
+
+        function stopReading() {
+            window.speechSynthesis.cancel();
+            const btn = document.getElementById('speaker-btn');
+            if(btn) btn.classList.remove('talking');
         }
 
         /* --- Immersive Kingdom Logic --- */
@@ -859,9 +1072,14 @@
             }
         }
 
-        let bgMusic = new Audio('background.mp3');
+        let bgMusic = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
         bgMusic.loop = true;
         let musicPlaying = false;
+
+        // Magic Ear (Error Tracking)
+        bgMusic.onerror = function() {
+            alert("The magic music couldn't load! 🌸 Check your internet or try a different browser.");
+        };
 
         function toggleMusic() {
             const btn = document.getElementById('music-toggle');
@@ -887,11 +1105,11 @@
             const gallery = document.getElementById('drawing-gallery');
             // Keep default art
             let html = `
-                <div class="frame">
+                <div class="frame" onclick="openArt('https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400', 'Princess Whiskers 🐱')">
                     <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400" alt="Cat">
                     <div class="frame-label">Princess Whiskers 🐱</div>
                 </div>
-                <div class="frame">
+                <div class="frame" onclick="openArt('https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=400', 'Sir Flops-a-Lot 🐰')">
                     <img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=400" alt="Rabbit">
                     <div class="frame-label">Sir Flops-a-Lot 🐰</div>
                 </div>
@@ -900,7 +1118,7 @@
             myDrawings.forEach((d, index) => {
                 html += `
                     <div class="frame">
-                        <img src="${d.img}" alt="User drawing">
+                        <img src="${d.img}" alt="User drawing" onclick="openArt('${d.img}', '${d.label}')">
                         <div class="frame-label">
                             ${d.label} 
                             <br><button class="delete-btn" onclick="deleteDrawing(${index})">🗑️</button>
@@ -909,6 +1127,20 @@
                 `;
             });
             gallery.innerHTML = html;
+        }
+
+        function openArt(src, label) {
+            const modal = document.getElementById('art-modal');
+            const img = document.getElementById('modal-img');
+            const lab = document.getElementById('modal-label');
+            img.src = src;
+            lab.innerText = label;
+            modal.style.display = 'flex';
+            playMagicSound(400, 0.1);
+        }
+
+        function closeArt() {
+            document.getElementById('art-modal').style.display = 'none';
         }
 
         function deleteStory(index) {
@@ -926,6 +1158,64 @@
                 loadDrawings();
             }
         }
+
+        /* --- Backup & Restore Logic --- */
+        function downloadBackup() {
+            const data = {
+                stories: myStories,
+                drawings: myDrawings,
+                version: 1,
+                date: new Date().toISOString()
+            };
+            const blob = new Blob([JSON.stringify(data)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `amyras_magic_kingdom_backup_${new Date().toLocaleDateString().replace(/\//g, '-')}.json`;
+            a.click();
+            showReward("Magic Backup Created! 💾✨");
+        }
+
+        function restoreBackup(input) {
+            const file = input.files[0];
+            if (!file) return;
+
+            if (!confirm("This will replace all current stories and drawings. Are you sure? 🌸")) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const data = JSON.parse(e.target.result);
+                    if (data.stories && data.drawings) {
+                        myStories = data.stories;
+                        myDrawings = data.drawings;
+                        localStorage.setItem('amyra_stories', JSON.stringify(myStories));
+                        localStorage.setItem('amyra_drawings', JSON.stringify(myDrawings));
+                        loadStories();
+                        loadDrawings();
+                        showReward("Magic Restored! 📂✨");
+                    } else {
+                        alert("That doesn't look like a magic backup file! 🌸");
+                    }
+                } catch (err) {
+                    alert("Oh no! The backup file is broken. 🌸");
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        /* --- Magic Cursor Tracker --- */
+        window.addEventListener('mousemove', (e) => {
+            if (Math.random() > 0.8) {
+                const s = document.createElement('div');
+                s.className = 'sparkle';
+                s.style.left = e.pageX + 'px';
+                s.style.top = e.pageY + 'px';
+                s.style.background = `hsl(${Math.random() * 360}, 100%, 75%)`;
+                document.body.appendChild(s);
+                setTimeout(() => s.remove(), 800);
+            }
+        });
 
         // Initial Load
         checkTime();
