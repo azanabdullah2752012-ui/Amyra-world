@@ -837,8 +837,14 @@
         function readText(text) {
             window.speechSynthesis.cancel();
             const msg = new SpeechSynthesisUtterance(text);
+            
+            // Find a premium Mac voice
+            const voices = window.speechSynthesis.getVoices();
+            const premiumVoice = voices.find(v => v.name.includes('Samantha') || v.name.includes('Premium'));
+            if (premiumVoice) msg.voice = premiumVoice;
+
             msg.rate = 0.9;
-            msg.pitch = 1.2; // Princess-like pitch
+            msg.pitch = 1.1; 
             window.speechSynthesis.speak(msg);
         }
 
@@ -853,38 +859,71 @@
             }
         }
 
-        let musicOsc;
+        let bgMusic = new Audio('background.mp3');
+        bgMusic.loop = true;
         let musicPlaying = false;
+
         function toggleMusic() {
             const btn = document.getElementById('music-toggle');
             if (!musicPlaying) {
-                musicOsc = audioCtx.createOscillator();
-                const lfo = audioCtx.createOscillator();
-                const lfoGain = audioCtx.createGain();
-                
-                musicOsc.type = 'triangle';
-                musicOsc.frequency.setValueAtTime(440, audioCtx.currentTime);
-                
-                lfo.frequency.setValueAtTime(0.5, audioCtx.currentTime);
-                lfoGain.gain.setValueAtTime(10, audioCtx.currentTime);
-                
-                lfo.connect(lfoGain);
-                lfoGain.connect(musicOsc.frequency);
-                
-                const masterGain = audioCtx.createGain();
-                masterGain.gain.setValueAtTime(0.05, audioCtx.currentTime);
-                
-                musicOsc.connect(masterGain);
-                masterGain.connect(audioCtx.destination);
-                
-                musicOsc.start();
-                lfo.start();
+                bgMusic.play().catch(e => console.log("Music needs a click first!"));
                 musicPlaying = true;
                 btn.innerText = "🔇 Stop Music";
             } else {
-                musicOsc.stop();
+                bgMusic.pause();
                 musicPlaying = false;
                 btn.innerText = "🎵 Play Magic Music";
+            }
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('.story-page').forEach(p => p.style.display = 'none');
+            const page = document.getElementById('page-' + id);
+            if(page) page.style.display = 'block';
+            playMagicSound(600, 0.1);
+        }
+
+        function loadDrawings() {
+            const gallery = document.getElementById('drawing-gallery');
+            // Keep default art
+            let html = `
+                <div class="frame">
+                    <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400" alt="Cat">
+                    <div class="frame-label">Princess Whiskers 🐱</div>
+                </div>
+                <div class="frame">
+                    <img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=400" alt="Rabbit">
+                    <div class="frame-label">Sir Flops-a-Lot 🐰</div>
+                </div>
+            `;
+
+            myDrawings.forEach((d, index) => {
+                html += `
+                    <div class="frame">
+                        <img src="${d.img}" alt="User drawing">
+                        <div class="frame-label">
+                            ${d.label} 
+                            <br><button class="delete-btn" onclick="deleteDrawing(${index})">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+            gallery.innerHTML = html;
+        }
+
+        function deleteStory(index) {
+            if(confirm("Delete this story?")) {
+                myStories.splice(index, 1);
+                localStorage.setItem('amyra_stories', JSON.stringify(myStories));
+                loadStories();
+            }
+        }
+
+        function deleteDrawing(index) {
+            if(confirm("Delete this drawing?")) {
+                myDrawings.splice(index, 1);
+                localStorage.setItem('amyra_drawings', JSON.stringify(myDrawings));
+                loadDrawings();
             }
         }
 
