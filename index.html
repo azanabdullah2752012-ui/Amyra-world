@@ -577,17 +577,27 @@
         <!-- Home Section -->
         <section id="home" class="active">
             <div class="hero">
-                <h1>Amyra’s Magic Kingdom</h1>
-                <p style="font-size: 1.6rem; color: white; opacity: 0.9;">Where every drawing is a new adventure!</p>
+                <h1 style="font-size: 5rem; margin-bottom: 10px;">Amyra’s Magic Kingdom</h1>
+                <p style="font-size: 1.8rem; color: white; opacity: 0.9; margin-bottom: 40px;">The most magical place in the world!</p>
                 
-                <div style="margin: 40px 0;">
-                    <img src="magic_kingdom_assets_1777906759645.png" style="max-width: 80%; border-radius: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.3); animation: float3D 6s ease-in-out infinite;">
+                <div style="position: relative; display: inline-block; margin-bottom: 50px;">
+                    <img src="magic_castle_3d_1777907707259.png" style="max-width: 90%; border-radius: 50px; box-shadow: 0 40px 80px rgba(0,0,0,0.4); animation: floatCastle 8s ease-in-out infinite;">
+                    <div style="position: absolute; top: -20px; right: -20px; font-size: 5rem; animation: float3D 4s ease-in-out infinite;">✨</div>
                 </div>
 
-                <button class="magic-button" onclick="magicMessage()">✨ Enter the Magic ✨</button>
+                <div style="margin-top: 20px;">
+                    <button class="magic-button" onclick="magicMessage()">✨ Enter the Magic ✨</button>
+                </div>
                 <div id="magic-msg" class="magic-message"></div>
             </div>
         </section>
+
+        <style>
+            @keyframes floatCastle {
+                0%, 100% { transform: translateY(0) rotateX(2deg); }
+                50% { transform: translateY(-30px) rotateX(-2deg); }
+            }
+        </style>
 
         <!-- Art Room Section -->
         <section id="art">
