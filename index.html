@@ -43,7 +43,24 @@
             z-index: -1;
             overflow: hidden;
             background: var(--gradient);
+            transition: 2s;
         }
+
+        body.night-mode {
+            --pink: #2c3e50;
+            --yellow: #34495e;
+            --white: #1a1a1a;
+            --text: #ecf0f1;
+            --gradient: linear-gradient(135deg, #2c3e50 0%, #000000 100%);
+        }
+        
+        body.night-mode .frame, body.night-mode .workbench-card, body.night-mode .story-book, body.night-mode section {
+            background: rgba(44, 62, 80, 0.9);
+            color: white;
+            border-color: #34495e;
+        }
+
+        body.night-mode h1 { color: #9b59b6; }
 
         .floating-emoji {
             position: absolute;
@@ -402,6 +419,7 @@
         <button class="nav-btn" onclick="showSection('game')">🎮 Game</button>
         <button class="nav-btn" onclick="showSection('learning')">🌸 Garden</button>
         <button class="nav-btn" style="border-style: dashed;" onclick="showSection('workbench')">✨ Workbench</button>
+        <button class="nav-btn" id="music-toggle" onclick="toggleMusic()">🎵 Play Magic Music</button>
     </nav>
 
     <main>
@@ -456,20 +474,35 @@
         <!-- Workbench Section -->
         <section id="workbench">
             <h1>✨ Magic Workbench</h1>
-            <p style="text-align: center; margin-bottom: 30px;">Add new magic to the kingdom!</p>
+            <p style="text-align: center; margin-bottom: 20px;">Add your own magic here!</p>
             
             <div class="workbench-card">
                 <h2>🎨 Add a Drawing</h2>
-                <input type="text" id="draw-label" class="magic-input" placeholder="Name of drawing (e.g. My Cute Cat)">
-                <input type="file" id="draw-file" class="magic-input" accept="image/*">
-                <button class="magic-button" onclick="saveDrawing()">Add to Gallery ✨</button>
+                <div id="image-preview-container" style="margin-bottom: 15px; text-align: center; display: none;">
+                    <img id="image-preview" style="max-width: 100%; border-radius: 15px; border: 5px solid var(--pink);">
+                </div>
+                <input type="file" id="draw-file" class="magic-input" accept="image/*" onchange="previewImage(this)">
+                <input type="text" id="draw-label" class="magic-input" placeholder="Give it a name! (e.g. My Cat)">
+                <button class="magic-button" style="width: 100%; font-size: 1.8rem;" onclick="saveDrawing()">SAVE DRAWING! 🎨</button>
             </div>
 
             <div class="workbench-card">
                 <h2>✍️ Write a Story</h2>
-                <input type="text" id="story-title" class="magic-input" placeholder="Title of the story">
-                <textarea id="story-text" class="magic-textarea" placeholder="Write your magical story here..."></textarea>
-                <button class="magic-button" onclick="saveStory()">Save Story ✨</button>
+                <input type="text" id="story-title" class="magic-input" placeholder="Story Title">
+                
+                <!-- Emoji Quick-Bar -->
+                <div style="display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center;">
+                    <button class="nav-btn" style="font-size: 1.5rem;" onclick="addEmoji('🐱')">🐱</button>
+                    <button class="nav-btn" style="font-size: 1.5rem;" onclick="addEmoji('🐰')">🐰</button>
+                    <button class="nav-btn" style="font-size: 1.5rem;" onclick="addEmoji('🍦')">🍦</button>
+                    <button class="nav-btn" style="font-size: 1.5rem;" onclick="addEmoji('🍰')">🍰</button>
+                    <button class="nav-btn" style="font-size: 1.5rem;" onclick="addEmoji('💖')">💖</button>
+                    <button class="nav-btn" style="font-size: 1.5rem;" onclick="addEmoji('✨')">✨</button>
+                    <button class="nav-btn" style="font-size: 1.5rem;" onclick="addEmoji('👑')">👑</button>
+                </div>
+
+                <textarea id="story-text" class="magic-textarea" placeholder="Start typing your story..."></textarea>
+                <button class="magic-button" style="width: 100%; font-size: 1.8rem;" onclick="saveStory()">SAVE STORY! ✍️</button>
             </div>
         </section>
 
@@ -698,10 +731,32 @@
         let myStories = JSON.parse(localStorage.getItem('amyra_stories') || '[]');
         let myDrawings = JSON.parse(localStorage.getItem('amyra_drawings') || '[]');
 
+        function addEmoji(emoji) {
+            const textarea = document.getElementById('story-text');
+            textarea.value += emoji;
+            textarea.focus();
+            playMagicSound(700, 0.05);
+        }
+
+        function previewImage(input) {
+            const preview = document.getElementById('image-preview');
+            const container = document.getElementById('image-preview-container');
+            const file = input.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    container.style.display = 'block';
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
         function saveStory() {
             const title = document.getElementById('story-title').value;
             const text = document.getElementById('story-text').value;
-            if(!title || !text) return alert("Please write something first! 🌸");
+            if(!title || !text) return alert("Don't forget to write something! 🌸");
 
             myStories.push({ title, text });
             localStorage.setItem('amyra_stories', JSON.stringify(myStories));
@@ -719,7 +774,7 @@
             const fileInput = document.getElementById('draw-file');
             const file = fileInput.files[0];
 
-            if(!label || !file) return alert("Please add a name and pick a photo! 🎨");
+            if(!label || !file) return alert("Give your drawing a name and pick a photo! 🎨");
 
             const reader = new FileReader();
             reader.onload = function(e) {
@@ -728,6 +783,7 @@
                 localStorage.setItem('amyra_drawings', JSON.stringify(myDrawings));
                 
                 document.getElementById('draw-label').value = '';
+                document.getElementById('image-preview-container').style.display = 'none';
                 fileInput.value = '';
                 
                 loadDrawings();
@@ -744,7 +800,10 @@
             // Start with default story
             let html = `
                 <div class="story-page" id="page-default">
-                    <h2>Princess Amyra and the Magic Ice Cream</h2>
+                    <div style="display:flex; justify-content:space-between; align-items:center;">
+                        <h2>Princess Amyra and the Magic Ice Cream</h2>
+                        <button class="magic-button" style="padding: 10px 20px; font-size: 1rem;" onclick="readText('Princess Amyra and the Magic Ice Cream. Once upon a time, in a land of pastel pink clouds, lived Princess Amyra. She had two best friends: a fluffy white cat named Pearl and a tiny rabbit named Buttons.')">🔊 Read Story</button>
+                    </div>
                     <p>Once upon a time, in a land of pastel pink clouds, lived <b>Princess Amyra</b>. She had two best friends: a fluffy white cat named Pearl and a tiny rabbit named Buttons.</p>
                     <p>They found a magic ice cream cart that made everyone float! 🍦✨</p>
                 </div>
@@ -755,7 +814,10 @@
                     <div class="story-page" id="page-${index}" style="display:none">
                         <div style="display:flex; justify-content:space-between; align-items:center;">
                             <h2>${s.title}</h2>
-                            <button class="delete-btn" onclick="deleteStory(${index})">Delete 🗑️</button>
+                            <div>
+                                <button class="magic-button" style="padding: 10px 20px; font-size: 1rem;" onclick="readText('${s.title}. ${s.text.replace(/'/g, "\\'")}')">🔊 Read Aloud</button>
+                                <button class="delete-btn" onclick="deleteStory(${index})">Delete 🗑️</button>
+                            </div>
                         </div>
                         <p>${s.text.replace(/\n/g, '<br>')}</p>
                     </div>
@@ -772,57 +834,62 @@
             controls.innerHTML = ctrlHtml;
         }
 
-        function showPage(id) {
-            document.querySelectorAll('.story-page').forEach(p => p.style.display = 'none');
-            document.getElementById('page-' + id).style.display = 'block';
-            playMagicSound(600, 0.1);
+        function readText(text) {
+            window.speechSynthesis.cancel();
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.rate = 0.9;
+            msg.pitch = 1.2; // Princess-like pitch
+            window.speechSynthesis.speak(msg);
         }
 
-        function loadDrawings() {
-            const gallery = document.getElementById('drawing-gallery');
-            // Keep default art
-            let html = `
-                <div class="frame">
-                    <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400" alt="Cat">
-                    <div class="frame-label">Princess Whiskers 🐱</div>
-                </div>
-                <div class="frame">
-                    <img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=400" alt="Rabbit">
-                    <div class="frame-label">Sir Flops-a-Lot 🐰</div>
-                </div>
-            `;
-
-            myDrawings.forEach((d, index) => {
-                html += `
-                    <div class="frame">
-                        <img src="${d.img}" alt="User drawing">
-                        <div class="frame-label">
-                            ${d.label} 
-                            <br><button class="delete-btn" onclick="deleteDrawing(${index})">🗑️</button>
-                        </div>
-                    </div>
-                `;
-            });
-            gallery.innerHTML = html;
-        }
-
-        function deleteStory(index) {
-            if(confirm("Delete this story?")) {
-                myStories.splice(index, 1);
-                localStorage.setItem('amyra_stories', JSON.stringify(myStories));
-                loadStories();
+        /* --- Immersive Kingdom Logic --- */
+        function checkTime() {
+            const hours = new Date().getHours();
+            const isNight = hours >= 18 || hours < 6;
+            if (isNight) {
+                document.body.classList.add('night-mode');
+            } else {
+                document.body.classList.remove('night-mode');
             }
         }
 
-        function deleteDrawing(index) {
-            if(confirm("Delete this drawing?")) {
-                myDrawings.splice(index, 1);
-                localStorage.setItem('amyra_drawings', JSON.stringify(myDrawings));
-                loadDrawings();
+        let musicOsc;
+        let musicPlaying = false;
+        function toggleMusic() {
+            const btn = document.getElementById('music-toggle');
+            if (!musicPlaying) {
+                musicOsc = audioCtx.createOscillator();
+                const lfo = audioCtx.createOscillator();
+                const lfoGain = audioCtx.createGain();
+                
+                musicOsc.type = 'triangle';
+                musicOsc.frequency.setValueAtTime(440, audioCtx.currentTime);
+                
+                lfo.frequency.setValueAtTime(0.5, audioCtx.currentTime);
+                lfoGain.gain.setValueAtTime(10, audioCtx.currentTime);
+                
+                lfo.connect(lfoGain);
+                lfoGain.connect(musicOsc.frequency);
+                
+                const masterGain = audioCtx.createGain();
+                masterGain.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                
+                musicOsc.connect(masterGain);
+                masterGain.connect(audioCtx.destination);
+                
+                musicOsc.start();
+                lfo.start();
+                musicPlaying = true;
+                btn.innerText = "🔇 Stop Music";
+            } else {
+                musicOsc.stop();
+                musicPlaying = false;
+                btn.innerText = "🎵 Play Magic Music";
             }
         }
 
         // Initial Load
+        checkTime();
         loadStories();
         loadDrawings();
     </script>
