@@ -331,6 +331,58 @@
             to { transform: translateY(-50px) scale(0); opacity: 0; }
         }
 
+        /* --- Workbench (Admin) --- */
+        .workbench-card {
+            background: #fff;
+            padding: 30px;
+            border-radius: 30px;
+            margin-bottom: 30px;
+            border: 4px dashed #ff99cc;
+        }
+
+        .magic-input {
+            width: 100%;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid var(--pink);
+            font-family: inherit;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .magic-textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border-radius: 15px;
+            border: 2px solid var(--pink);
+            font-family: inherit;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .admin-footer {
+            text-align: center;
+            margin-top: 50px;
+            padding: 20px;
+            opacity: 0.5;
+            transition: 0.3s;
+        }
+
+        .admin-footer:hover {
+            opacity: 1;
+        }
+
+        .delete-btn {
+            background: #ffcdd2;
+            color: #c62828;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
         /* --- Responsive --- */
         @media (max-width: 600px) {
             h1 { font-size: 2rem; }
@@ -349,6 +401,7 @@
         <button class="nav-btn" onclick="showSection('story')">🏰 Story</button>
         <button class="nav-btn" onclick="showSection('game')">🎮 Game</button>
         <button class="nav-btn" onclick="showSection('learning')">🌸 Garden</button>
+        <button class="nav-btn" style="border-style: dashed;" onclick="showSection('workbench')">✨ Workbench</button>
     </nav>
 
     <main>
@@ -372,45 +425,51 @@
         <section id="art">
             <h1>Royal Art Gallery</h1>
             <p style="text-align: center; margin-bottom: 20px;">The most beautiful drawings in the kingdom!</p>
-            <div class="gallery">
+            <div class="gallery" id="drawing-gallery">
+                <!-- Static Art -->
                 <div class="frame">
                     <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400" alt="Cat drawing">
                     <div class="frame-label">Princess Whiskers 🐱</div>
                 </div>
-                <div class="frame">
-                    <img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=400" alt="Rabbit drawing">
-                    <div class="frame-label">Sir Flops-a-Lot 🐰</div>
-                </div>
-                <div class="frame">
-                    <img src="https://images.unsplash.com/photo-1464191303285-a2211b71a6c9?auto=format&fit=crop&q=80&w=400" alt="Castle drawing">
-                    <div class="frame-label">The Magic Castle 🏰</div>
-                </div>
-                <div class="frame">
-                    <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&q=80&w=400" alt="Cake drawing">
-                    <div class="frame-label">Royal Strawberry Cake 🍰</div>
-                </div>
+                <!-- Dynamic Art will be inserted here -->
             </div>
         </section>
 
         <!-- Story Section -->
         <section id="story">
             <h1>Story Castle</h1>
-            <div class="story-book" id="story-content">
-                <!-- Page 1 -->
-                <div id="page1">
-                    <h2>Princess Amyra and the Magic Ice Cream</h2>
-                    <p>Once upon a time, in a land of pastel pink clouds, lived <b>Princess Amyra</b>. She had two best friends: a fluffy white cat named Pearl and a tiny rabbit named Buttons.</p>
-                    <p>One sunny morning, they found a glowing ice cream cart near the Royal Garden. It wasn't just any ice cream...</p>
-                </div>
-                <!-- Page 2 (Hidden initially) -->
-                <div id="page2" style="display: none;">
-                    <p>When Amyra took a scoop of the "Sparkle Swirl," her crown began to glow! Every time she laughed, tiny cupcakes appeared in the air.</p>
-                    <p>Pearl the cat started floating, and Buttons the rabbit grew wings! They had the best ice cream party ever.</p>
-                    <p><b>The End! ✨</b></p>
+            <div id="story-list-container">
+                <div class="story-book" id="story-content">
+                    <!-- Default Story -->
+                    <div class="story-page active-page">
+                        <h2>Princess Amyra and the Magic Ice Cream</h2>
+                        <p>Once upon a time, in a land of pastel pink clouds, lived <b>Princess Amyra</b>. She had two best friends: a fluffy white cat named Pearl and a tiny rabbit named Buttons.</p>
+                        <p>One sunny morning, they found a glowing ice cream cart near the Royal Garden...</p>
+                    </div>
                 </div>
             </div>
-            <div class="page-controls">
-                <button class="nav-btn" id="next-btn" onclick="nextPage()">Next Page ➡️</button>
+            <div class="page-controls" id="story-nav-controls">
+                <!-- Navigation buttons will be added dynamically -->
+            </div>
+        </section>
+
+        <!-- Workbench Section -->
+        <section id="workbench">
+            <h1>✨ Magic Workbench</h1>
+            <p style="text-align: center; margin-bottom: 30px;">Add new magic to the kingdom!</p>
+            
+            <div class="workbench-card">
+                <h2>🎨 Add a Drawing</h2>
+                <input type="text" id="draw-label" class="magic-input" placeholder="Name of drawing (e.g. My Cute Cat)">
+                <input type="file" id="draw-file" class="magic-input" accept="image/*">
+                <button class="magic-button" onclick="saveDrawing()">Add to Gallery ✨</button>
+            </div>
+
+            <div class="workbench-card">
+                <h2>✍️ Write a Story</h2>
+                <input type="text" id="story-title" class="magic-input" placeholder="Title of the story">
+                <textarea id="story-text" class="magic-textarea" placeholder="Write your magical story here..."></textarea>
+                <button class="magic-button" onclick="saveStory()">Save Story ✨</button>
             </div>
         </section>
 
@@ -634,6 +693,138 @@
         window.addEventListener('click', (e) => {
             if (e.target.tagName === 'BUTTON') createSparkles(e.pageX, e.pageY);
         });
+
+        /* --- Magic Storage Logic --- */
+        let myStories = JSON.parse(localStorage.getItem('amyra_stories') || '[]');
+        let myDrawings = JSON.parse(localStorage.getItem('amyra_drawings') || '[]');
+
+        function saveStory() {
+            const title = document.getElementById('story-title').value;
+            const text = document.getElementById('story-text').value;
+            if(!title || !text) return alert("Please write something first! 🌸");
+
+            myStories.push({ title, text });
+            localStorage.setItem('amyra_stories', JSON.stringify(myStories));
+            
+            document.getElementById('story-title').value = '';
+            document.getElementById('story-text').value = '';
+            
+            loadStories();
+            showReward("Story Saved! ✍️✨");
+            showSection('story');
+        }
+
+        function saveDrawing() {
+            const label = document.getElementById('draw-label').value;
+            const fileInput = document.getElementById('draw-file');
+            const file = fileInput.files[0];
+
+            if(!label || !file) return alert("Please add a name and pick a photo! 🎨");
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const imgData = e.target.result;
+                myDrawings.push({ label, img: imgData });
+                localStorage.setItem('amyra_drawings', JSON.stringify(myDrawings));
+                
+                document.getElementById('draw-label').value = '';
+                fileInput.value = '';
+                
+                loadDrawings();
+                showReward("Drawing Added! 🎨✨");
+                showSection('art');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function loadStories() {
+            const container = document.getElementById('story-content');
+            const controls = document.getElementById('story-nav-controls');
+            
+            // Start with default story
+            let html = `
+                <div class="story-page" id="page-default">
+                    <h2>Princess Amyra and the Magic Ice Cream</h2>
+                    <p>Once upon a time, in a land of pastel pink clouds, lived <b>Princess Amyra</b>. She had two best friends: a fluffy white cat named Pearl and a tiny rabbit named Buttons.</p>
+                    <p>They found a magic ice cream cart that made everyone float! 🍦✨</p>
+                </div>
+            `;
+
+            myStories.forEach((s, index) => {
+                html += `
+                    <div class="story-page" id="page-${index}" style="display:none">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <h2>${s.title}</h2>
+                            <button class="delete-btn" onclick="deleteStory(${index})">Delete 🗑️</button>
+                        </div>
+                        <p>${s.text.replace(/\n/g, '<br>')}</p>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            
+            // Build Controls
+            let ctrlHtml = `<button class="nav-btn" onclick="showPage('default')">📖 Main Story</button>`;
+            myStories.forEach((s, index) => {
+                ctrlHtml += `<button class="nav-btn" onclick="showPage(${index})">📜 ${s.title.substring(0,10)}...</button>`;
+            });
+            controls.innerHTML = ctrlHtml;
+        }
+
+        function showPage(id) {
+            document.querySelectorAll('.story-page').forEach(p => p.style.display = 'none');
+            document.getElementById('page-' + id).style.display = 'block';
+            playMagicSound(600, 0.1);
+        }
+
+        function loadDrawings() {
+            const gallery = document.getElementById('drawing-gallery');
+            // Keep default art
+            let html = `
+                <div class="frame">
+                    <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400" alt="Cat">
+                    <div class="frame-label">Princess Whiskers 🐱</div>
+                </div>
+                <div class="frame">
+                    <img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=400" alt="Rabbit">
+                    <div class="frame-label">Sir Flops-a-Lot 🐰</div>
+                </div>
+            `;
+
+            myDrawings.forEach((d, index) => {
+                html += `
+                    <div class="frame">
+                        <img src="${d.img}" alt="User drawing">
+                        <div class="frame-label">
+                            ${d.label} 
+                            <br><button class="delete-btn" onclick="deleteDrawing(${index})">🗑️</button>
+                        </div>
+                    </div>
+                `;
+            });
+            gallery.innerHTML = html;
+        }
+
+        function deleteStory(index) {
+            if(confirm("Delete this story?")) {
+                myStories.splice(index, 1);
+                localStorage.setItem('amyra_stories', JSON.stringify(myStories));
+                loadStories();
+            }
+        }
+
+        function deleteDrawing(index) {
+            if(confirm("Delete this drawing?")) {
+                myDrawings.splice(index, 1);
+                localStorage.setItem('amyra_drawings', JSON.stringify(myDrawings));
+                loadDrawings();
+            }
+        }
+
+        // Initial Load
+        loadStories();
+        loadDrawings();
     </script>
 </body>
 </html>
