@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amyra’s Magic Kingdom</title>
+    <style>
+        /* --- Design System & Variables --- */
+        :root {
+            --pink: #ffd6e8;
+            --yellow: #fff4b3;
+            --white: #ffffff;
+            --gold: #f39c12;
+            --text: #5d4037;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --gradient: linear-gradient(135deg, #ffd6e8 0%, #fff4b3 100%);
+            --font-main: 'Comic Sans MS', 'Chalkboard SE', 'cursive', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background: var(--pink);
+            background-attachment: fixed;
+            color: var(--text);
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* --- Background Magic --- */
+        .magic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: var(--gradient);
+        }
+
+        .floating-emoji {
+            position: absolute;
+            font-size: 2rem;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(15deg); }
+        }
+
+        /* --- Navigation --- */
+        nav {
+            position: sticky;
+            top: 10px;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            padding: 10px;
+            flex-wrap: wrap;
+        }
+
+        .nav-btn {
+            background: var(--white);
+            border: 3px solid var(--yellow);
+            border-radius: 50px;
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 10px var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-btn:hover {
+            transform: scale(1.1) translateY(-3px);
+            background: var(--yellow);
+            border-color: var(--white);
+        }
+
+        .nav-btn.active {
+            background: var(--yellow);
+            box-shadow: 0 0 15px rgba(255, 244, 179, 0.8);
+        }
+
+        /* --- Layout --- */
+        main {
+            max-width: 900px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        section {
+            display: none;
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(5px);
+            border-radius: 40px;
+            padding: 40px;
+            box-shadow: 0 15px 35px var(--shadow);
+            border: 8px solid var(--white);
+            animation: fadeIn 0.6s ease-out;
+            min-height: 60vh;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            text-align: center;
+            margin-bottom: 20px;
+            color: #ff69b4;
+            text-shadow: 2px 2px 0 var(--white);
+        }
+
+        /* --- Homepage --- */
+        .hero {
+            text-align: center;
+        }
+
+        .hero-sparkles {
+            font-size: 3rem;
+            margin: 20px;
+        }
+
+        .magic-button {
+            background: linear-gradient(to right, #ff99cc, #ffcc99);
+            color: white;
+            border: none;
+            padding: 20px 40px;
+            font-size: 1.5rem;
+            border-radius: 100px;
+            cursor: pointer;
+            margin-top: 30px;
+            box-shadow: 0 10px 20px rgba(255, 105, 180, 0.3);
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .magic-button:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 30px rgba(255, 105, 180, 0.5);
+        }
+
+        .magic-message {
+            margin-top: 30px;
+            font-size: 1.8rem;
+            color: #d81b60;
+            min-height: 2.5rem;
+            font-weight: bold;
+        }
+
+        /* --- Art Room --- */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+        }
+
+        .frame {
+            background: var(--white);
+            border: 15px solid #ffeb3b;
+            border-image: linear-gradient(gold, #fff176) 30;
+            padding: 10px;
+            box-shadow: 5px 5px 15px var(--shadow);
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .frame:hover {
+            transform: rotate(2deg) scale(1.05);
+        }
+
+        .frame img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border: 2px solid #eee;
+        }
+
+        .frame-label {
+            text-align: center;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* --- Story Castle --- */
+        .story-book {
+            background: #fffdf0;
+            padding: 30px;
+            border-radius: 20px;
+            border-left: 10px solid #ffcc33;
+            line-height: 1.8;
+            font-size: 1.3rem;
+        }
+
+        .page-controls {
+            margin-top: 30px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* --- Game Room --- */
+        .game-area {
+            position: relative;
+            height: 400px;
+            background: #f0f4ff;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: crosshair;
+            border: 4px dashed #ff99cc;
+        }
+
+        .game-item {
+            position: absolute;
+            font-size: 3rem;
+            cursor: pointer;
+            user-select: none;
+            transition: transform 0.1s;
+        }
+
+        .score-board {
+            text-align: center;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #ff4081;
+        }
+
+        /* --- Learning Garden --- */
+        .quiz-container {
+            text-align: center;
+        }
+
+        .quiz-card {
+            background: white;
+            padding: 30px;
+            border-radius: 30px;
+            margin-top: 20px;
+        }
+
+        .options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .option-btn {
+            background: #e1f5fe;
+            border: 3px solid #03a9f4;
+            padding: 15px;
+            border-radius: 20px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .option-btn:hover {
+            background: #b3e5fc;
+        }
+
+        .feedback {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            font-weight: bold;
+            height: 2rem;
+        }
+
+        /* --- Reward Modal --- */
+        .reward-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .reward-card {
+            background: white;
+            padding: 50px;
+            border-radius: 40px;
+            border: 10px solid var(--yellow);
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0); }
+            80% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- Sparkles effect --- */
+        .sparkle {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background: gold;
+            border-radius: 50%;
+            pointer-events: none;
+            animation: sparkleAnim 1s forwards;
+        }
+
+        @keyframes sparkleAnim {
+            to { transform: translateY(-50px) scale(0); opacity: 0; }
+        }
+
+        /* --- Responsive --- */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .nav-btn { font-size: 0.9rem; padding: 8px 15px; }
+            section { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="magic-bg" id="magic-bg"></div>
+
+    <nav>
+        <button class="nav-btn active" onclick="showSection('home')">🏠 Home</button>
+        <button class="nav-btn" onclick="showSection('art')">🎨 Art Room</button>
+        <button class="nav-btn" onclick="showSection('story')">🏰 Story</button>
+        <button class="nav-btn" onclick="showSection('game')">🎮 Game</button>
+        <button class="nav-btn" onclick="showSection('learning')">🌸 Garden</button>
+    </nav>
+
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="active">
+            <div class="hero">
+                <div class="hero-sparkles">✨🐱🐰✨</div>
+                <h1>Welcome to Amyra’s Magic Kingdom</h1>
+                <p style="font-size: 1.4rem;">Where dreams come true and everything is sweet!</p>
+                
+                <button class="magic-button" onclick="magicMessage()">✨ Press for Magic! ✨</button>
+                <div id="magic-msg" class="magic-message"></div>
+                
+                <div style="margin-top: 40px; font-size: 5rem;">
+                    👑 🍦 🍰 🦄
+                </div>
+            </div>
+        </section>
+
+        <!-- Art Room Section -->
+        <section id="art">
+            <h1>Royal Art Gallery</h1>
+            <p style="text-align: center; margin-bottom: 20px;">The most beautiful drawings in the kingdom!</p>
+            <div class="gallery">
+                <div class="frame">
+                    <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?auto=format&fit=crop&q=80&w=400" alt="Cat drawing">
+                    <div class="frame-label">Princess Whiskers 🐱</div>
+                </div>
+                <div class="frame">
+                    <img src="https://images.unsplash.com/photo-1585110396000-c9ffd4e4b308?auto=format&fit=crop&q=80&w=400" alt="Rabbit drawing">
+                    <div class="frame-label">Sir Flops-a-Lot 🐰</div>
+                </div>
+                <div class="frame">
+                    <img src="https://images.unsplash.com/photo-1464191303285-a2211b71a6c9?auto=format&fit=crop&q=80&w=400" alt="Castle drawing">
+                    <div class="frame-label">The Magic Castle 🏰</div>
+                </div>
+                <div class="frame">
+                    <img src="https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?auto=format&fit=crop&q=80&w=400" alt="Cake drawing">
+                    <div class="frame-label">Royal Strawberry Cake 🍰</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Story Section -->
+        <section id="story">
+            <h1>Story Castle</h1>
+            <div class="story-book" id="story-content">
+                <!-- Page 1 -->
+                <div id="page1">
+                    <h2>Princess Amyra and the Magic Ice Cream</h2>
+                    <p>Once upon a time, in a land of pastel pink clouds, lived <b>Princess Amyra</b>. She had two best friends: a fluffy white cat named Pearl and a tiny rabbit named Buttons.</p>
+                    <p>One sunny morning, they found a glowing ice cream cart near the Royal Garden. It wasn't just any ice cream...</p>
+                </div>
+                <!-- Page 2 (Hidden initially) -->
+                <div id="page2" style="display: none;">
+                    <p>When Amyra took a scoop of the "Sparkle Swirl," her crown began to glow! Every time she laughed, tiny cupcakes appeared in the air.</p>
+                    <p>Pearl the cat started floating, and Buttons the rabbit grew wings! They had the best ice cream party ever.</p>
+                    <p><b>The End! ✨</b></p>
+                </div>
+            </div>
+            <div class="page-controls">
+                <button class="nav-btn" id="next-btn" onclick="nextPage()">Next Page ➡️</button>
+            </div>
+        </section>
+
+        <!-- Game Room Section -->
+        <section id="game">
+            <h1>Magic Catch!</h1>
+            <div class="score-board">Score: <span id="score">0</span></div>
+            <div class="game-area" id="game-area">
+                <div style="text-align: center; padding-top: 150px; color: #aaa;">Click the buttons to start catching!</div>
+            </div>
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="nav-btn" onclick="startGame()">Start Game! 🍦</button>
+            </div>
+        </section>
+
+        <!-- Learning Garden Section -->
+        <section id="learning">
+            <h1>Learning Garden</h1>
+            <div class="quiz-container">
+                <div class="quiz-card">
+                    <h2 id="question">What starts with the letter "C"?</h2>
+                    <div class="options">
+                        <button class="option-btn" onclick="checkAnswer(true, this)">🐱 Cat</button>
+                        <button class="option-btn" onclick="checkAnswer(false, this)">🍎 Apple</button>
+                        <button class="option-btn" onclick="checkAnswer(true, this)">🍰 Cake</button>
+                        <button class="option-btn" onclick="checkAnswer(false, this)">🎈 Balloon</button>
+                    </div>
+                    <div id="quiz-feedback" class="feedback"></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Reward Modal -->
+    <div class="reward-overlay" id="reward-modal">
+        <div class="reward-card">
+            <h1 style="font-size: 4rem;">🎉 Yay! 🎉</h1>
+            <p id="reward-text" style="font-size: 2rem;">You won a cake! 🍰</p>
+            <button class="magic-button" onclick="closeReward()">Thank you! ✨</button>
+        </div>
+    </div>
+
+    <script>
+        /* --- Navigation Logic --- */
+        function showSection(id) {
+            document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            
+            document.getElementById(id).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            // Play a small sound
+            playMagicSound(440, 0.1);
+
+            if (id === 'game') stopGame();
+        }
+
+        /* --- Magic Background Logic --- */
+        const emojis = ['🐱', '🐰', '✨', '🍦', '💖', '⭐', '🎈'];
+        const bg = document.getElementById('magic-bg');
+        for (let i = 0; i < 20; i++) {
+            const span = document.createElement('span');
+            span.className = 'floating-emoji';
+            span.innerText = emojis[Math.floor(Math.random() * emojis.length)];
+            span.style.left = Math.random() * 100 + 'vw';
+            span.style.top = Math.random() * 100 + 'vh';
+            span.style.animationDelay = Math.random() * 5 + 's';
+            span.style.fontSize = (Math.random() * 20 + 20) + 'px';
+            bg.appendChild(span);
+        }
+
+        /* --- Home: Magic Messages --- */
+        const messages = [
+            "You are a beautiful princess! 👑",
+            "You are super smart! 🧠✨",
+            "A magic cat loves you! 🐱💖",
+            "Have a sweet ice cream day! 🍦",
+            "You are kind and brave! 🦁🌸",
+            "The rabbits are dancing for you! 🐰💃",
+            "You are purely magical! ✨"
+        ];
+        function magicMessage() {
+            const display = document.getElementById('magic-msg');
+            const msg = messages[Math.floor(Math.random() * messages.length)];
+            display.innerText = msg;
+            createSparkles(event.pageX, event.pageY);
+            playMagicSound(660, 0.2);
+            
+            if (Math.random() > 0.7) {
+                showReward("You won a Magic Wand! 🪄");
+            }
+        }
+
+        /* --- Story: Pagination --- */
+        let currentPage = 1;
+        function nextPage() {
+            const p1 = document.getElementById('page1');
+            const p2 = document.getElementById('page2');
+            const btn = document.getElementById('next-btn');
+            
+            if (currentPage === 1) {
+                p1.style.display = 'none';
+                p2.style.display = 'block';
+                btn.innerText = '⬅️ Read Again';
+                currentPage = 2;
+            } else {
+                p1.style.display = 'block';
+                p2.style.display = 'none';
+                btn.innerText = 'Next Page ➡️';
+                currentPage = 1;
+            }
+            playMagicSound(550, 0.1);
+        }
+
+        /* --- Game: Clicker --- */
+        let score = 0;
+        let gameInterval;
+        const gameArea = document.getElementById('game-area');
+        const scoreDisplay = document.getElementById('score');
+
+        function startGame() {
+            score = 0;
+            scoreDisplay.innerText = score;
+            gameArea.innerHTML = '';
+            stopGame();
+            gameInterval = setInterval(spawnItem, 800);
+            playMagicSound(880, 0.1);
+        }
+
+        function stopGame() {
+            clearInterval(gameInterval);
+        }
+
+        function spawnItem() {
+            const item = document.createElement('div');
+            item.className = 'game-item';
+            const icons = ['🍦', '🐱', '🎈', '🍰', '🐰', '🍭'];
+            item.innerText = icons[Math.floor(Math.random() * icons.length)];
+            
+            const x = Math.random() * (gameArea.clientWidth - 50);
+            const y = Math.random() * (gameArea.clientHeight - 50);
+            
+            item.style.left = x + 'px';
+            item.style.top = y + 'px';
+            
+            item.onclick = function() {
+                score++;
+                scoreDisplay.innerText = score;
+                this.remove();
+                playMagicSound(1000, 0.05);
+                if (score === 10) showReward("You are a Game Master! 🏆");
+            };
+            
+            gameArea.appendChild(item);
+            setTimeout(() => item.remove(), 2000);
+        }
+
+        /* --- Learning Garden: Quiz --- */
+        function checkAnswer(isCorrect, btn) {
+            const feedback = document.getElementById('quiz-feedback');
+            if (isCorrect) {
+                feedback.innerText = "Correct! 🌟 Yay!";
+                feedback.style.color = "#4caf50";
+                btn.style.borderColor = "#4caf50";
+                playMagicSound(800, 0.2);
+                setTimeout(() => showReward("You won a Gold Star! ⭐"), 500);
+            } else {
+                feedback.innerText = "Try again, princess! 🌸";
+                feedback.style.color = "#f44336";
+                btn.style.borderColor = "#f44336";
+                playMagicSound(200, 0.2);
+            }
+        }
+
+        /* --- Global Rewards --- */
+        function showReward(text) {
+            const modal = document.getElementById('reward-modal');
+            const txt = document.getElementById('reward-text');
+            txt.innerText = text;
+            modal.style.display = 'flex';
+            playMagicSound(523, 0.5); // C note
+        }
+
+        function closeReward() {
+            document.getElementById('reward-modal').style.display = 'none';
+        }
+
+        /* --- Helper: Sparkles --- */
+        function createSparkles(x, y) {
+            for (let i = 0; i < 10; i++) {
+                const s = document.createElement('div');
+                s.className = 'sparkle';
+                s.style.left = x + (Math.random() * 40 - 20) + 'px';
+                s.style.top = y + (Math.random() * 40 - 20) + 'px';
+                document.body.appendChild(s);
+                setTimeout(() => s.remove(), 1000);
+            }
+        }
+
+        /* --- Helper: Simple Audio Synth (No external files needed) --- */
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playMagicSound(freq, duration) {
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            osc.frequency.exponentialRampToValueAtTime(freq * 2, audioCtx.currentTime + duration);
+            
+            gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+            
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        // Initialize sparkles on click
+        window.addEventListener('click', (e) => {
+            if (e.target.tagName === 'BUTTON') createSparkles(e.pageX, e.pageY);
+        });
+    </script>
+</body>
+</html>
